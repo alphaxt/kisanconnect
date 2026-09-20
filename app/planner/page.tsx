@@ -9,13 +9,19 @@ import {
 import toast from 'react-hot-toast'
 
 const AGRI_CITIES = [
-  { id: 'lahore', name: 'Lahore (لاہور)', province: 'Punjab', specialty: 'Wheat, Rice & Vegetables' },
   { id: 'multan', name: 'Multan (ملتان)', province: 'Punjab', specialty: 'Cotton, Mango & Wheat' },
+  { id: 'lahore', name: 'Lahore (لاہور)', province: 'Punjab', specialty: 'Wheat, Rice & Vegetables' },
   { id: 'faisalabad', name: 'Faisalabad (فیصل آباد)', province: 'Punjab', specialty: 'Sugarcane, Wheat & Maize' },
   { id: 'sargodha', name: 'Sargodha (سرگودھا)', province: 'Punjab', specialty: 'Citrus (Kinnow) & Guava' },
+  { id: 'rahim_yar_khan', name: 'Rahim Yar Khan (رحیم یار خان)', province: 'Punjab', specialty: 'Sugarcane, Cotton & Wheat' },
+  { id: 'bahawalpur', name: 'Bahawalpur (بہاولپور)', province: 'Punjab', specialty: 'Cotton, Wheat & Dates' },
+  { id: 'sialkot', name: 'Sialkot (سیالکوٹ)', province: 'Punjab', specialty: 'Basmati Rice & Wheat' },
+  { id: 'rawalpindi', name: 'Rawalpindi / Islamabad (راولپنڈی)', province: 'Punjab', specialty: 'Rainfed Wheat & Mustard' },
   { id: 'sukkur', name: 'Sukkur (سکھر)', province: 'Sindh', specialty: 'Dates, Rice & Wheat' },
   { id: 'hyderabad', name: 'Hyderabad (حیدرآباد)', province: 'Sindh', specialty: 'Red Chilli, Banana & Cotton' },
+  { id: 'karachi', name: 'Karachi (کراچی)', province: 'Sindh', specialty: 'Coastal Agriculture & Poultry' },
   { id: 'peshawar', name: 'Peshawar (پشاور)', province: 'KPK', specialty: 'Maize, Tobacco & Sugarbeet' },
+  { id: 'swat', name: 'Swat (سوات)', province: 'KPK', specialty: 'Apples, Peaches & Off-Season Veg' },
   { id: 'quetta', name: 'Quetta (کوئٹہ)', province: 'Balochistan', specialty: 'Apples, Almonds & Grapes' },
 ]
 
@@ -32,11 +38,9 @@ export default function PlannerPage() {
         if (res.ok) {
           const data = await res.json()
           setWeatherData(data)
-        } else {
-          setWeatherData(getMockCityWeather(selectedCity))
         }
-      } catch {
-        setWeatherData(getMockCityWeather(selectedCity))
+      } catch (e) {
+        console.error('Weather error:', e)
       } finally {
         setLoading(false)
       }
@@ -44,31 +48,6 @@ export default function PlannerPage() {
     fetchWeather()
   }, [selectedCity])
 
-  function getMockCityWeather(city: string) {
-    const isSouth = ['multan', 'sukkur', 'hyderabad'].includes(city)
-    const baseTemp = isSouth ? 34 : 29
-    return {
-      city: city.charAt(0).toUpperCase() + city.slice(1),
-      temperature: baseTemp,
-      feels_like: baseTemp + 3,
-      humidity: 58,
-      wind_speed: 12,
-      wind_direction: 'NE',
-      description: 'Partly Cloudy & Warm',
-      icon: '02d',
-      uv_index: 7,
-      rain_chance: 25,
-      forecast: [
-        { day: 'Today', date: 'Sep 21', high: baseTemp, low: baseTemp - 8, rain_chance: 25, humidity: 58, description: 'Partly Cloudy' },
-        { day: 'Mon', date: 'Sep 22', high: baseTemp + 1, low: baseTemp - 7, rain_chance: 15, humidity: 52, description: 'Sunny & Clear' },
-        { day: 'Tue', date: 'Sep 23', high: baseTemp - 2, low: baseTemp - 9, rain_chance: 60, humidity: 75, description: 'Light Showers' },
-        { day: 'Wed', date: 'Sep 24', high: baseTemp - 3, low: baseTemp - 10, rain_chance: 70, humidity: 80, description: 'Moderate Thunderstorm' },
-        { day: 'Thu', date: 'Sep 25', high: baseTemp, low: baseTemp - 8, rain_chance: 30, humidity: 65, description: 'Scattered Clouds' },
-        { day: 'Fri', date: 'Sep 26', high: baseTemp + 2, low: baseTemp - 7, rain_chance: 10, humidity: 48, description: 'Clear Sunshine' },
-        { day: 'Sat', date: 'Sep 27', high: baseTemp + 1, low: baseTemp - 6, rain_chance: 10, humidity: 45, description: 'Sunny' },
-      ]
-    }
-  }
 
   const currentCityObj = AGRI_CITIES.find(c => c.id === selectedCity) || AGRI_CITIES[0]
 
