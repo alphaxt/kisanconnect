@@ -233,6 +233,49 @@ export default function DashboardPage() {
           ))}
         </div>
 
+        {/* Kisan vs Buyer Smart Arbitrage Banner */}
+        <div style={{
+          display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 28
+        }}>
+          <style>{`
+            @media (max-width: 768px) {
+              div[style*="gridTemplateColumns: 1fr 1fr"] {
+                grid-template-columns: 1fr !important;
+              }
+            }
+          `}</style>
+          <div style={{
+            background: 'rgba(0,200,83,0.06)', border: '1px solid rgba(0,200,83,0.25)',
+            borderRadius: 14, padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14
+          }}>
+            <div style={{ fontSize: '1.8rem' }}>🌾</div>
+            <div>
+              <div style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--green)' }}>
+                FOR KISANS: HIGHEST SELLING MANDIS TODAY
+              </div>
+              <div style={{ fontSize: '0.82rem', color: 'var(--text-light)', marginTop: 2 }}>
+                <strong>Wheat:</strong> Sukkur (₨ 3,900/maund) • <strong>Cotton:</strong> Vehari (₨ 9,100) • <strong>Basmati:</strong> Hafizabad (₨ 4,350)
+              </div>
+            </div>
+          </div>
+
+          <div style={{
+            background: 'rgba(0,145,234,0.06)', border: '1px solid rgba(0,145,234,0.25)',
+            borderRadius: 14, padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 14
+          }}>
+            <div style={{ fontSize: '1.8rem' }}>🛒</div>
+            <div>
+              <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#00E5FF' }}>
+                FOR BUYERS & MILLS: LOWEST SOURCING RATES
+              </div>
+              <div style={{ fontSize: '0.82rem', color: 'var(--text-light)', marginTop: 2 }}>
+                <strong>Irri Rice:</strong> Larkana (₨ 2,450/maund) • <strong>Maize:</strong> Mardan (₨ 2,550) • <strong>Potato:</strong> Okara (₨ 2,900)
+              </div>
+            </div>
+          </div>
+        </div>
+
+
         {/* 7-Day Trend Chart Section */}
         <div className="card" style={{ padding: '24px', marginBottom: 32 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, marginBottom: 20 }}>

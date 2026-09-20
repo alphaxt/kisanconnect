@@ -4,12 +4,14 @@ import { Navbar } from '@/components/Navbar'
 import { LandingFooter } from '@/components/landing/LandingTestimonials'
 import {
   Store, Search, Filter, Plus, MapPin, Phone, MessageCircle,
-  CheckCircle2, ShieldCheck, Tag, ArrowUpRight, Clock, Sparkles
+  CheckCircle2, ShieldCheck, Tag, ArrowUpRight, Clock, Sparkles,
+  ShoppingBag, Truck, Building2
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
-interface ProduceListing {
+interface MarketplaceItem {
   id: string
+  type: 'sell' | 'buy'
   crop: string
   crop_urdu: string
   category: 'Grains' | 'Cash Crops' | 'Fruits' | 'Vegetables'
@@ -29,185 +31,68 @@ interface ProduceListing {
   created_at: string
 }
 
-const INITIAL_LISTINGS: ProduceListing[] = [
-  {
-    id: '1',
-    crop: 'Super Kernel Basmati Rice',
-    crop_urdu: 'سپر کرنل باسمتی چاول',
-    category: 'Grains',
-    quantity: 650,
-    unit: 'Maund (40 kg)',
-    price: 4350,
-    min_order: 50,
-    city: 'Hafizabad',
-    province: 'Punjab',
-    farmer_name: 'Chaudhry Tariq Mehmood',
-    farmer_phone: '923001234567',
-    farmer_rating: 4.9,
-    is_verified: true,
-    is_organic: false,
-    image_url: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=80',
-    description: 'A-grade 2026 harvest, moisture content strictly below 12%, long grain aromatic Basmati direct from farm gate.',
-    created_at: '2 hours ago'
-  },
-  {
-    id: '2',
-    crop: 'Export Quality Kinnow (Mandarin)',
-    crop_urdu: 'ایکسپورٹ کوالٹی کنو',
-    category: 'Fruits',
-    quantity: 2500,
-    unit: 'Wooden Crates (10 kg)',
-    price: 1100,
-    min_order: 100,
-    city: 'Bhalwal, Sargodha',
-    province: 'Punjab',
-    farmer_name: 'Malik Zafar Iqbal',
-    farmer_phone: '923019876543',
-    farmer_rating: 4.8,
-    is_verified: true,
-    is_organic: true,
-    image_url: 'https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=600&auto=format&fit=crop&q=80',
-    description: 'Waxed and sorted Kinnow from 50-acre family orchard. Ready for domestic fruit markets or Middle East export packaging.',
-    created_at: '5 hours ago'
-  },
-  {
-    id: '3',
-    crop: 'Raw White Cotton (Phutti)',
-    crop_urdu: 'پھٹی کپاس',
-    category: 'Cash Crops',
-    quantity: 400,
-    unit: 'Maund (40 kg)',
-    price: 9100,
-    min_order: 40,
-    city: 'Vehari',
-    province: 'Punjab',
-    farmer_name: 'Haji Ghulam Rasool',
-    farmer_phone: '923334567890',
-    farmer_rating: 4.7,
-    is_verified: true,
-    is_organic: false,
-    image_url: 'https://images.unsplash.com/photo-1605000797499-95a51c5269ae?w=600&auto=format&fit=crop&q=80',
-    description: 'First picking high-ginning outturn (GOT 39%), clean white fiber free of trash and dust.',
-    created_at: '1 day ago'
-  },
-  {
-    id: '4',
-    crop: 'Red Long Chilli (Kunri Special)',
-    crop_urdu: 'کنری کی لال مرچ',
-    category: 'Vegetables',
-    quantity: 180,
-    unit: 'Maund (40 kg)',
-    price: 28200,
-    min_order: 10,
-    city: 'Kunri, Umerkot',
-    province: 'Sindh',
-    farmer_name: 'Seth Gobind Ram',
-    farmer_phone: '923456789012',
-    farmer_rating: 5.0,
-    is_verified: true,
-    is_organic: true,
-    image_url: 'https://images.unsplash.com/photo-1588252303782-cb80119abd6d?w=600&auto=format&fit=crop&q=80',
-    description: 'Authentic sun-dried Kunri spicy red chilli, vibrant crimson color, ideal for spice processors.',
-    created_at: '1 day ago'
-  },
-  {
-    id: '5',
-    crop: 'Certified Seed Potato (Santé)',
-    crop_urdu: 'آلو بیج سانتے',
-    category: 'Vegetables',
-    quantity: 1200,
-    unit: 'Bags (50 kg)',
-    price: 3600,
-    min_order: 50,
-    city: 'Depalpur, Okara',
-    province: 'Punjab',
-    farmer_name: 'Mian Babar Ali',
-    farmer_phone: '923215678901',
-    farmer_rating: 4.9,
-    is_verified: true,
-    is_organic: false,
-    image_url: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600&auto=format&fit=crop&q=80',
-    description: 'Cold-storage stored seed potatoes with vigorous germination rate. Certified by Federal Seed Certification (FSC&RD).',
-    created_at: '2 days ago'
-  },
-  {
-    id: '6',
-    crop: 'Organic Kala Kulu Apple',
-    crop_urdu: 'کالا کلو سیب کوئٹہ',
-    category: 'Fruits',
-    quantity: 850,
-    unit: 'Boxes (18 kg)',
-    price: 3800,
-    min_order: 30,
-    city: 'Ziarat',
-    province: 'Balochistan',
-    farmer_name: 'Mir Jan Muhammad',
-    farmer_phone: '923123456789',
-    farmer_rating: 4.9,
-    is_verified: true,
-    is_organic: true,
-    image_url: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=600&auto=format&fit=crop&q=80',
-    description: 'Crisp mountain apples cultivated with spring water in Ziarat valley. No chemical waxing.',
-    created_at: '3 days ago'
-  }
-]
-
 export default function MarketplacePage() {
-  const [listings, setListings] = useState<ProduceListing[]>(INITIAL_LISTINGS)
+  const [listings, setListings] = useState<MarketplaceItem[]>([])
+  const [listingType, setListingType] = useState<'all' | 'sell' | 'buy'>('all')
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('All')
   const [province, setProvince] = useState('All')
   const [organicOnly, setOrganicOnly] = useState(false)
   const [isPostModalOpen, setIsPostModalOpen] = useState(false)
-  const [contactModalListing, setContactModalListing] = useState<ProduceListing | null>(null)
+  const [postMode, setPostMode] = useState<'sell' | 'buy'>('sell')
+  const [contactModalListing, setContactModalListing] = useState<MarketplaceItem | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // New listing state
+  // Form state
   const [formData, setFormData] = useState({
     crop: '', crop_urdu: '', category: 'Grains' as const, quantity: '', unit: 'Maund (40 kg)',
     price: '', min_order: '', city: '', province: 'Punjab', farmer_name: '', farmer_phone: '',
     is_organic: false, description: ''
   })
 
-  // Fetch real listings if available
+  // Load listings from API
   useEffect(() => {
     async function loadListings() {
       try {
-        const res = await fetch('/api/listings')
+        const res = await fetch(`/api/listings?type=${listingType === 'all' ? '' : listingType}`)
         if (res.ok) {
-          const data = await res.json()
-          if (Array.isArray(data) && data.length > 0) {
-            const mapped = data.map((d: any) => ({
-              id: d.id || String(Math.random()),
+          const json = await res.json()
+          if (Array.isArray(json.data)) {
+            const mapped = json.data.map((d: any) => ({
+              id: d.id,
+              type: d.type || 'sell',
               crop: d.crop,
               crop_urdu: d.crop_urdu || d.crop,
               category: d.category || 'Grains',
               quantity: d.quantity || 100,
-              unit: d.quantity_unit || 'Maund (40 kg)',
+              unit: d.quantity_unit || d.unit || 'Maund (40 kg)',
               price: d.price || 3000,
               min_order: d.min_order || 10,
-              city: d.location || 'Lahore',
+              city: d.location || d.city || 'Lahore',
               province: d.province || 'Punjab',
-              farmer_name: d.profiles?.full_name || 'Verified Farmer',
-              farmer_phone: d.profiles?.phone || '923001234567',
-              farmer_rating: 4.8,
+              farmer_name: d.farmer_name || d.profiles?.full_name || (d.type === 'buy' ? 'Verified Buyer' : 'Verified Farmer'),
+              farmer_phone: d.farmer_phone || '923001234567',
+              farmer_rating: 4.9,
               is_verified: true,
               is_organic: !!d.is_organic,
               image_url: d.image_url || 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=80',
-              description: d.description || 'Fresh produce direct from farm.',
-              created_at: 'Recently'
+              description: d.description || '',
+              created_at: d.created_at || 'Recently'
             }))
-            setListings(prev => [...mapped, ...prev.filter(p => !mapped.some(m => m.id === p.id))])
+            setListings(mapped)
           }
         }
-      } catch {}
+      } catch (e) {
+        console.error('Listings fetch error:', e)
+      }
     }
     loadListings()
-  }, [])
+  }, [listingType])
 
   // Filter listings
   const filtered = useMemo(() => {
     return listings.filter(item => {
+      const matchType = listingType === 'all' || item.type === listingType
       const matchSearch = item.crop.toLowerCase().includes(search.toLowerCase()) ||
                           item.crop_urdu.includes(search) ||
                           item.city.toLowerCase().includes(search.toLowerCase()) ||
@@ -215,9 +100,9 @@ export default function MarketplacePage() {
       const matchCategory = category === 'All' || item.category === category
       const matchProvince = province === 'All' || item.province === province
       const matchOrganic = !organicOnly || item.is_organic
-      return matchSearch && matchCategory && matchProvince && matchOrganic
+      return matchType && matchSearch && matchCategory && matchProvince && matchOrganic
     })
-  }, [listings, search, category, province, organicOnly])
+  }, [listings, listingType, search, category, province, organicOnly])
 
   async function handlePostListing(e: React.FormEvent) {
     e.preventDefault()
@@ -228,8 +113,34 @@ export default function MarketplacePage() {
 
     setIsSubmitting(true)
     try {
-      const newListing: ProduceListing = {
-        id: String(Date.now()),
+      const payload = {
+        type: postMode,
+        crop: formData.crop,
+        crop_urdu: formData.crop_urdu || formData.crop,
+        category: formData.category,
+        quantity: parseFloat(formData.quantity),
+        quantity_unit: formData.unit,
+        price: parseFloat(formData.price),
+        min_order: parseFloat(formData.min_order || '10'),
+        location: formData.city,
+        province: formData.province,
+        farmer_name: formData.farmer_name || (postMode === 'buy' ? 'Verified Buyer' : 'Verified Grower'),
+        farmer_phone: formData.farmer_phone,
+        is_organic: formData.is_organic,
+        description: formData.description
+      }
+
+      const res = await fetch('/api/listings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+
+      const saved = await res.json()
+
+      const newItem: MarketplaceItem = {
+        id: saved.id || String(Date.now()),
+        type: postMode,
         crop: formData.crop,
         crop_urdu: formData.crop_urdu || formData.crop,
         category: formData.category,
@@ -239,36 +150,18 @@ export default function MarketplacePage() {
         min_order: parseFloat(formData.min_order || '10'),
         city: formData.city,
         province: formData.province,
-        farmer_name: formData.farmer_name || 'Grower (You)',
+        farmer_name: formData.farmer_name || (postMode === 'buy' ? 'Procurement Buyer' : 'Grower'),
         farmer_phone: formData.farmer_phone,
         farmer_rating: 5.0,
         is_verified: true,
         is_organic: formData.is_organic,
         image_url: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=80',
-        description: formData.description || 'Farm-fresh harvest ready for immediate collection.',
+        description: formData.description || 'Direct listing on KisanConnect Marketplace.',
         created_at: 'Just now'
       }
 
-      // Send to API
-      await fetch('/api/listings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          crop: formData.crop,
-          category: formData.category,
-          quantity: parseFloat(formData.quantity),
-          quantity_unit: formData.unit,
-          price: parseFloat(formData.price),
-          min_order: parseFloat(formData.min_order || '10'),
-          location: formData.city,
-          province: formData.province,
-          is_organic: formData.is_organic,
-          description: formData.description
-        })
-      }).catch(() => {})
-
-      setListings(prev => [newListing, ...prev])
-      toast.success('Produce listed successfully on KisanConnect Marketplace!')
+      setListings(prev => [newItem, ...prev])
+      toast.success(postMode === 'buy' ? 'Buying Requirement Posted! Farmers can now contact you.' : 'Crop Listed for Sale Successfully!')
       setIsPostModalOpen(false)
       setFormData({
         crop: '', crop_urdu: '', category: 'Grains', quantity: '', unit: 'Maund (40 kg)',
@@ -276,7 +169,7 @@ export default function MarketplacePage() {
         is_organic: false, description: ''
       })
     } catch {
-      toast.error('Failed to post produce')
+      toast.error('Failed to post')
     } finally {
       setIsSubmitting(false)
     }
@@ -288,28 +181,84 @@ export default function MarketplacePage() {
 
       <main style={{ maxWidth: 1400, margin: '0 auto', padding: 'calc(var(--nav-h) + 24px) 24px 80px' }}>
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16, marginBottom: 32 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16, marginBottom: 28 }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
               <span className="badge badge-green" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                <Sparkles size={14} /> 0% Middleman Commission • Direct Kisan-to-Buyer
+                <Sparkles size={14} /> Dual-Sided Agri Trading Platform
               </span>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Verified Pakistani Farm Gate Produce</span>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>0% Commission • For Farmers & For Buyers</span>
             </div>
             <h1 style={{ fontSize: '2.2rem', fontWeight: 800, margin: 0 }}>
-              Farmer Direct Marketplace <span style={{ color: 'var(--green)' }}>کسان براہِ راست منڈی</span>
+              Kisan & Buyer Direct Marketplace <span style={{ color: 'var(--green)' }}>کسان اور خریدار منڈی</span>
             </h1>
-            <p style={{ color: 'var(--text-muted)', marginTop: 6, maxWidth: 650, fontSize: '0.95rem' }}>
-              Connect directly with mills, exporters, and bulk buyers across Pakistan. Bypass exploitative middle-men commissions and earn 25–40% higher margins.
+            <p style={{ color: 'var(--text-muted)', marginTop: 6, maxWidth: 680, fontSize: '0.95rem' }}>
+              <strong>Kisans:</strong> Sell crops directly to mills & exporters without arhti deductions. <br />
+              <strong>Buyers:</strong> Post bulk buying requirements and procure directly from verified farm gates across Pakistan.
             </p>
           </div>
 
+          <div style={{ display: 'flex', gap: 12 }}>
+            <button
+              onClick={() => {
+                setPostMode('sell')
+                setIsPostModalOpen(true)
+              }}
+              className="btn btn-primary"
+              style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 20px', fontSize: '0.9rem' }}
+            >
+              <Plus size={18} /> Kisan: Sell Crop (فصل بیچیں)
+            </button>
+            <button
+              onClick={() => {
+                setPostMode('buy')
+                setIsPostModalOpen(true)
+              }}
+              className="btn btn-outline"
+              style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 20px', fontSize: '0.9rem', borderColor: '#0091EA', color: '#0091EA' }}
+            >
+              <ShoppingBag size={18} /> Buyer: Post Demand (خریداری مانگ)
+            </button>
+          </div>
+        </div>
+
+        {/* Dual Mode Switcher (For Kisans vs For Buyers) */}
+        <div style={{
+          display: 'flex', gap: 12, marginBottom: 24, padding: 6,
+          background: 'rgba(255,255,255,0.04)', borderRadius: 14, width: 'fit-content', border: '1px solid var(--glass-border)'
+        }}>
           <button
-            onClick={() => setIsPostModalOpen(true)}
-            className="btn btn-primary"
-            style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '12px 24px', fontSize: '0.95rem' }}
+            onClick={() => setListingType('all')}
+            style={{
+              padding: '8px 20px', borderRadius: 10, fontSize: '0.9rem', fontWeight: 700, border: 'none', cursor: 'pointer',
+              background: listingType === 'all' ? 'var(--green)' : 'transparent',
+              color: listingType === 'all' ? '#000' : 'var(--text-light)',
+              transition: 'all 0.2s'
+            }}
           >
-            <Plus size={18} /> Post Produce (فصل فروخت کریں)
+            All Listings ({listings.length})
+          </button>
+          <button
+            onClick={() => setListingType('sell')}
+            style={{
+              padding: '8px 20px', borderRadius: 10, fontSize: '0.9rem', fontWeight: 700, border: 'none', cursor: 'pointer',
+              background: listingType === 'sell' ? 'var(--green)' : 'transparent',
+              color: listingType === 'sell' ? '#000' : 'var(--text-light)',
+              display: 'flex', alignItems: 'center', gap: 6, transition: 'all 0.2s'
+            }}
+          >
+            🌾 Farmers Selling (کسان کی فصلیں)
+          </button>
+          <button
+            onClick={() => setListingType('buy')}
+            style={{
+              padding: '8px 20px', borderRadius: 10, fontSize: '0.9rem', fontWeight: 700, border: 'none', cursor: 'pointer',
+              background: listingType === 'buy' ? '#0091EA' : 'transparent',
+              color: listingType === 'buy' ? '#fff' : 'var(--text-light)',
+              display: 'flex', alignItems: 'center', gap: 6, transition: 'all 0.2s'
+            }}
+          >
+            🛒 Buyer Demands / Mills (خریداروں کی ضرورت)
           </button>
         </div>
 
@@ -324,7 +273,7 @@ export default function MarketplacePage() {
               <Search size={18} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
               <input
                 type="text"
-                placeholder="Search by crop, variety, city, or grower (e.g. Basmati, Kinnow, Okara)..."
+                placeholder="Search crops, buyers, mills, or cities (e.g. Basmati, Rice Mills, Multan)..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 style={{
@@ -392,130 +341,152 @@ export default function MarketplacePage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 24 }}>
           {filtered.length === 0 ? (
             <div className="card" style={{ gridColumn: '1 / -1', padding: '60px 20px', textAlign: 'center', color: 'var(--text-muted)' }}>
-              <h3>No produce listings found matching your search.</h3>
-              <p>Try clearing filters or post your own produce using the button above.</p>
+              <h3>No listings found matching your search.</h3>
+              <p>Try switching between "Farmers Selling" and "Buyer Demands" or clear filters.</p>
             </div>
           ) : (
-            filtered.map(listing => (
-              <div
-                key={listing.id}
-                className="card"
-                style={{ padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
-              >
-                {/* Image & Badges */}
-                <div style={{ position: 'relative', height: 200, width: '100%' }}>
-                  <img
-                    src={listing.image_url}
-                    alt={listing.crop}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
-                  <div style={{
-                    position: 'absolute', top: 12, left: 12, display: 'flex', gap: 6, flexWrap: 'wrap'
-                  }}>
-                    <span className="badge badge-green" style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)' }}>
-                      {listing.category}
-                    </span>
-                    {listing.is_organic && (
-                      <span className="badge" style={{ background: 'rgba(0,200,83,0.85)', color: '#000', fontWeight: 700 }}>
-                        🌱 Organic
+            filtered.map(listing => {
+              const isBuyerDemand = listing.type === 'buy'
+
+              return (
+                <div
+                  key={listing.id}
+                  className="card"
+                  style={{
+                    padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column',
+                    border: isBuyerDemand ? '1px solid rgba(0,145,234,0.35)' : '1px solid var(--glass-border)'
+                  }}
+                >
+                  {/* Image & Badges */}
+                  <div style={{ position: 'relative', height: 190, width: '100%' }}>
+                    <img
+                      src={listing.image_url}
+                      alt={listing.crop}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                    <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                      <span
+                        className="badge"
+                        style={{
+                          background: isBuyerDemand ? '#0091EA' : 'var(--green)',
+                          color: isBuyerDemand ? '#fff' : '#000',
+                          fontWeight: 800, fontSize: '0.75rem'
+                        }}
+                      >
+                        {isBuyerDemand ? '🛒 BUYER DEMAND' : '🌾 PRODUCER LISTING'}
                       </span>
-                    )}
-                  </div>
-                  <div style={{
-                    position: 'absolute', bottom: 12, right: 12,
-                    background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(4px)',
-                    padding: '6px 12px', borderRadius: 8, fontSize: '0.8rem', fontWeight: 700, color: 'var(--green)'
-                  }}>
-                    {listing.quantity} {listing.unit} Available
-                  </div>
-                </div>
+                      {listing.is_organic && (
+                        <span className="badge" style={{ background: 'rgba(0,200,83,0.85)', color: '#000', fontWeight: 700, fontSize: '0.75rem' }}>
+                          🌱 Organic
+                        </span>
+                      )}
+                    </div>
 
-                {/* Content */}
-                <div style={{ padding: 20, display: 'flex', flexDirection: 'column', flex: 1 }}>
-                  <div style={{ marginBottom: 12 }}>
-                    <h3 style={{ fontSize: '1.2rem', fontWeight: 800, margin: '0 0 4px' }}>
-                      {listing.crop}
-                    </h3>
-                    <div style={{ fontSize: '0.9rem', color: 'var(--green)', fontFamily: 'sans-serif' }}>
-                      {listing.crop_urdu}
+                    <div style={{
+                      position: 'absolute', bottom: 12, right: 12,
+                      background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(4px)',
+                      padding: '6px 12px', borderRadius: 8, fontSize: '0.8rem', fontWeight: 700,
+                      color: isBuyerDemand ? '#00E5FF' : 'var(--green)'
+                    }}>
+                      {isBuyerDemand ? 'Requirement:' : 'Available:'} {listing.quantity} {listing.unit.split(' ')[0]}
                     </div>
                   </div>
 
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: '0 0 16px', lineHeight: 1.5, flex: 1 }}>
-                    {listing.description}
-                  </p>
-
-                  {/* Price & Location */}
-                  <div style={{
-                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                    padding: '12px 14px', background: 'rgba(255,255,255,0.03)', borderRadius: 10, marginBottom: 16
-                  }}>
-                    <div>
-                      <div style={{ fontSize: '1.3rem', fontWeight: 900, color: 'var(--green)' }}>
-                        ₨ {listing.price.toLocaleString()}
-                      </div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                        per {listing.unit.split(' ')[0]} • Min: {listing.min_order}
+                  {/* Content */}
+                  <div style={{ padding: 20, display: 'flex', flexDirection: 'column', flex: 1 }}>
+                    <div style={{ marginBottom: 10 }}>
+                      <h3 style={{ fontSize: '1.2rem', fontWeight: 800, margin: '0 0 4px' }}>
+                        {listing.crop}
+                      </h3>
+                      <div style={{ fontSize: '0.9rem', color: isBuyerDemand ? '#0091EA' : 'var(--green)', fontFamily: 'sans-serif' }}>
+                        {listing.crop_urdu}
                       </div>
                     </div>
-                    <div style={{ textAlign: 'right' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.85rem', fontWeight: 600 }}>
-                        <MapPin size={14} color="var(--text-muted)" /> {listing.city}
-                      </div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{listing.province}</div>
-                    </div>
-                  </div>
 
-                  {/* Farmer Info & Contact */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <div style={{
-                        width: 34, height: 34, borderRadius: '50%', background: 'rgba(0,200,83,0.15)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: 'var(--green)', fontSize: '0.9rem'
-                      }}>
-                        {listing.farmer_name[0]}
-                      </div>
+                    <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: '0 0 16px', lineHeight: 1.5, flex: 1 }}>
+                      {listing.description}
+                    </p>
+
+                    {/* Price & Location */}
+                    <div style={{
+                      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                      padding: '12px 14px', background: isBuyerDemand ? 'rgba(0,145,234,0.06)' : 'rgba(255,255,255,0.03)',
+                      borderRadius: 10, marginBottom: 16, border: isBuyerDemand ? '1px solid rgba(0,145,234,0.15)' : 'none'
+                    }}>
                       <div>
-                        <div style={{ fontSize: '0.85rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4 }}>
-                          {listing.farmer_name}
-                          {listing.is_verified && <ShieldCheck size={14} color="var(--green)" />}
+                        <div style={{ fontSize: '1.3rem', fontWeight: 900, color: isBuyerDemand ? '#00E5FF' : 'var(--green)' }}>
+                          ₨ {listing.price.toLocaleString()}
                         </div>
                         <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                          ★ {listing.farmer_rating} • Verified Grower
+                          {isBuyerDemand ? 'Offered Price' : 'Asking Price'} per {listing.unit.split(' ')[0]}
                         </div>
                       </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.85rem', fontWeight: 600 }}>
+                          <MapPin size={14} color="var(--text-muted)" /> {listing.city}
+                        </div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{listing.province}</div>
+                      </div>
                     </div>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{listing.created_at}</span>
-                  </div>
 
-                  {/* Action Buttons */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                    <button
-                      onClick={() => {
-                        const message = `Assalam-o-Alaikum ${listing.farmer_name}! I saw your listing for "${listing.crop}" on KisanConnect (${listing.quantity} ${listing.unit} at Rs ${listing.price}). I want to negotiate a purchase.`
-                        window.open(`https://wa.me/${listing.farmer_phone}?text=${encodeURIComponent(message)}`, '_blank')
-                      }}
-                      className="btn btn-primary"
-                      style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: '0.85rem', padding: '10px 0' }}
-                    >
-                      <MessageCircle size={16} /> WhatsApp
-                    </button>
-                    <button
-                      onClick={() => setContactModalListing(listing)}
-                      className="btn btn-outline"
-                      style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: '0.85rem', padding: '10px 0' }}
-                    >
-                      <Phone size={16} /> Direct Call
-                    </button>
+                    {/* Party info (Farmer vs Buyer) */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <div style={{
+                          width: 34, height: 34, borderRadius: '50%',
+                          background: isBuyerDemand ? 'rgba(0,145,234,0.15)' : 'rgba(0,200,83,0.15)',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700,
+                          color: isBuyerDemand ? '#0091EA' : 'var(--green)', fontSize: '0.9rem'
+                        }}>
+                          {isBuyerDemand ? <Building2 size={18} /> : listing.farmer_name[0]}
+                        </div>
+                        <div>
+                          <div style={{ fontSize: '0.85rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4 }}>
+                            {listing.farmer_name}
+                            <ShieldCheck size={14} color={isBuyerDemand ? '#0091EA' : 'var(--green)'} />
+                          </div>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                            {isBuyerDemand ? 'Verified Industrial Buyer' : 'Verified Grower (کاشتکار)'}
+                          </div>
+                        </div>
+                      </div>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{listing.created_at}</span>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                      <button
+                        onClick={() => {
+                          const message = isBuyerDemand
+                            ? `Assalam-o-Alaikum! I have produce ready for your buying demand: "${listing.crop}" (${listing.quantity} ${listing.unit} at Rs ${listing.price}). I can supply directly to ${listing.city}.`
+                            : `Assalam-o-Alaikum ${listing.farmer_name}! I saw your listing for "${listing.crop}" on KisanConnect (${listing.quantity} ${listing.unit} at Rs ${listing.price}). I want to negotiate purchase.`
+                          window.open(`https://wa.me/${listing.farmer_phone}?text=${encodeURIComponent(message)}`, '_blank')
+                        }}
+                        className={isBuyerDemand ? 'btn' : 'btn btn-primary'}
+                        style={{
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: '0.85rem', padding: '10px 0',
+                          background: isBuyerDemand ? '#0091EA' : undefined, color: isBuyerDemand ? '#fff' : undefined
+                        }}
+                      >
+                        <MessageCircle size={16} /> WhatsApp
+                      </button>
+                      <button
+                        onClick={() => setContactModalListing(listing)}
+                        className="btn btn-outline"
+                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: '0.85rem', padding: '10px 0' }}
+                      >
+                        <Phone size={16} /> Direct Call
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
+              )
+            })
           )}
         </div>
       </main>
 
-      {/* Modal: Post Produce */}
+      {/* Modal: Post Produce or Buyer Demand */}
       {isPostModalOpen && (
         <div style={{
           position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)',
@@ -523,7 +494,14 @@ export default function MarketplacePage() {
         }}>
           <div className="card" style={{ maxWidth: 540, width: '100%', maxHeight: '90vh', overflowY: 'auto', padding: 28, position: 'relative' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-              <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800 }}>Post Produce for Sale (فصل کی لسٹنگ)</h3>
+              <div>
+                <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800 }}>
+                  {postMode === 'buy' ? 'Post Buying Requirement (خریداری کی ضرورت)' : 'Post Produce for Sale (فصل برائے فروخت)'}
+                </h3>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: 2 }}>
+                  {postMode === 'buy' ? 'For mills, exporters, and wholesale buyers' : 'For farmers and crop growers'}
+                </div>
+              </div>
               <button
                 onClick={() => setIsPostModalOpen(false)}
                 style={{ background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '1.4rem', cursor: 'pointer' }}
@@ -532,10 +510,36 @@ export default function MarketplacePage() {
               </button>
             </div>
 
+            {/* Toggle Mode inside modal */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 16 }}>
+              <button
+                type="button"
+                onClick={() => setPostMode('sell')}
+                style={{
+                  padding: '8px 12px', borderRadius: 8, fontSize: '0.85rem', fontWeight: 700, border: 'none', cursor: 'pointer',
+                  background: postMode === 'sell' ? 'var(--green)' : 'rgba(255,255,255,0.06)',
+                  color: postMode === 'sell' ? '#000' : 'var(--text-light)'
+                }}
+              >
+                🌾 I am Selling (کسان)
+              </button>
+              <button
+                type="button"
+                onClick={() => setPostMode('buy')}
+                style={{
+                  padding: '8px 12px', borderRadius: 8, fontSize: '0.85rem', fontWeight: 700, border: 'none', cursor: 'pointer',
+                  background: postMode === 'buy' ? '#0091EA' : 'rgba(255,255,255,0.06)',
+                  color: postMode === 'buy' ? '#fff' : 'var(--text-light)'
+                }}
+              >
+                🛒 I am Buying (خریدار / مل)
+              </button>
+            </div>
+
             <form onSubmit={handlePostListing} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: 6 }}>Crop / Produce Name</label>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: 6 }}>Commodity / Crop Name</label>
                   <input
                     type="text"
                     required
@@ -572,7 +576,7 @@ export default function MarketplacePage() {
                   </select>
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: 6 }}>Quantity Unit</label>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: 6 }}>Measurement Unit</label>
                   <select
                     value={formData.unit}
                     onChange={e => setFormData({ ...formData, unit: e.target.value })}
@@ -588,22 +592,26 @@ export default function MarketplacePage() {
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: 6 }}>Total Quantity Available</label>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: 6 }}>
+                    {postMode === 'buy' ? 'Desired Quantity' : 'Total Quantity Available'}
+                  </label>
                   <input
                     type="number"
                     required
-                    placeholder="e.g. 500"
+                    placeholder="e.g. 1000"
                     value={formData.quantity}
                     onChange={e => setFormData({ ...formData, quantity: e.target.value })}
                     style={{ width: '100%', padding: '10px 14px', borderRadius: 8, background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', color: '#fff', outline: 'none' }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: 6 }}>Price per Unit (PKR)</label>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: 6 }}>
+                    {postMode === 'buy' ? 'Offered Price (PKR)' : 'Asking Price (PKR)'}
+                  </label>
                   <input
                     type="number"
                     required
-                    placeholder="e.g. 4200"
+                    placeholder="e.g. 4400"
                     value={formData.price}
                     onChange={e => setFormData({ ...formData, price: e.target.value })}
                     style={{ width: '100%', padding: '10px 14px', borderRadius: 8, background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', color: '#fff', outline: 'none' }}
@@ -613,11 +621,13 @@ export default function MarketplacePage() {
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: 6 }}>Farm City / Tehsil</label>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: 6 }}>
+                    {postMode === 'buy' ? 'Delivery City / Factory' : 'Farm City / Tehsil'}
+                  </label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Sahiwal"
+                    placeholder="e.g. Muridke / Multan"
                     value={formData.city}
                     onChange={e => setFormData({ ...formData, city: e.target.value })}
                     style={{ width: '100%', padding: '10px 14px', borderRadius: 8, background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', color: '#fff', outline: 'none' }}
@@ -640,11 +650,13 @@ export default function MarketplacePage() {
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: 6 }}>Farmer / Contact Name</label>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: 6 }}>
+                    {postMode === 'buy' ? 'Mill / Buyer Business Name' : 'Farmer / Contact Name'}
+                  </label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Mian Rashid"
+                    placeholder={postMode === 'buy' ? 'e.g. Al-Madina Rice Mills' : 'e.g. Mian Tariq'}
                     value={formData.farmer_name}
                     onChange={e => setFormData({ ...formData, farmer_name: e.target.value })}
                     style={{ width: '100%', padding: '10px 14px', borderRadius: 8, background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', color: '#fff', outline: 'none' }}
@@ -664,24 +676,15 @@ export default function MarketplacePage() {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: 6 }}>Quality Description & Terms</label>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: 6 }}>Terms & Details</label>
                 <textarea
                   rows={3}
-                  placeholder="e.g. Harvested this week, sun dried, stored in aerated warehouse. Cash on delivery or bank transfer."
+                  placeholder={postMode === 'buy' ? 'Payment on weighbridge receipt, prompt bank transfer, moisture cut rules...' : 'Sun-dried harvest, stored in aerated warehouse, immediate collection...'}
                   value={formData.description}
                   onChange={e => setFormData({ ...formData, description: e.target.value })}
                   style={{ width: '100%', padding: '10px 14px', borderRadius: 8, background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', color: '#fff', outline: 'none' }}
                 />
               </div>
-
-              <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.85rem', cursor: 'pointer' }}>
-                <input
-                  type="checkbox"
-                  checked={formData.is_organic}
-                  onChange={e => setFormData({ ...formData, is_organic: e.target.checked })}
-                />
-                This crop is cultivated without synthetic pesticides (Certified Organic)
-              </label>
 
               <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
                 <button
@@ -696,9 +699,9 @@ export default function MarketplacePage() {
                   type="submit"
                   disabled={isSubmitting}
                   className="btn btn-primary"
-                  style={{ flex: 1 }}
+                  style={{ flex: 1, background: postMode === 'buy' ? '#0091EA' : undefined }}
                 >
-                  {isSubmitting ? 'Publishing...' : 'Publish Listing'}
+                  {isSubmitting ? 'Submitting...' : postMode === 'buy' ? 'Publish Buying Demand' : 'Publish Crop Listing'}
                 </button>
               </div>
             </form>
@@ -706,7 +709,7 @@ export default function MarketplacePage() {
         </div>
       )}
 
-      {/* Modal: Direct Call / Contact Seller */}
+      {/* Modal: Direct Call / Contact Party */}
       {contactModalListing && (
         <div style={{
           position: 'fixed', inset: 0, zIndex: 9999, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)',
@@ -714,7 +717,9 @@ export default function MarketplacePage() {
         }}>
           <div className="card" style={{ maxWidth: 440, width: '100%', padding: 28, position: 'relative' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-              <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800 }}>Direct Grower Contact</h3>
+              <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800 }}>
+                {contactModalListing.type === 'buy' ? 'Buyer Procurement Contact' : 'Direct Grower Contact'}
+              </h3>
               <button
                 onClick={() => setContactModalListing(null)}
                 style={{ background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '1.4rem', cursor: 'pointer' }}
@@ -724,7 +729,12 @@ export default function MarketplacePage() {
             </div>
 
             <div style={{ textAlign: 'center', padding: '16px 0 24px' }}>
-              <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'rgba(0,200,83,0.15)', color: 'var(--green)', fontSize: '1.8rem', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
+              <div style={{
+                width: 64, height: 64, borderRadius: '50%',
+                background: contactModalListing.type === 'buy' ? 'rgba(0,145,234,0.15)' : 'rgba(0,200,83,0.15)',
+                color: contactModalListing.type === 'buy' ? '#0091EA' : 'var(--green)',
+                fontSize: '1.8rem', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px'
+              }}>
                 {contactModalListing.farmer_name[0]}
               </div>
               <h4 style={{ margin: '0 0 4px', fontSize: '1.2rem', fontWeight: 700 }}>{contactModalListing.farmer_name}</h4>
@@ -734,16 +744,23 @@ export default function MarketplacePage() {
             </div>
 
             <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--glass-border)', borderRadius: 12, padding: 16, marginBottom: 20 }}>
-              <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: 4 }}>Listing:</div>
+              <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: 4 }}>
+                {contactModalListing.type === 'buy' ? 'Purchasing Requirement:' : 'Crop for Sale:'}
+              </div>
               <div style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-light)', marginBottom: 2 }}>{contactModalListing.crop}</div>
-              <div style={{ fontSize: '0.85rem', color: 'var(--green)' }}>₨ {contactModalListing.price.toLocaleString()} / {contactModalListing.unit}</div>
+              <div style={{ fontSize: '0.85rem', color: contactModalListing.type === 'buy' ? '#00E5FF' : 'var(--green)' }}>
+                ₨ {contactModalListing.price.toLocaleString()} / {contactModalListing.unit} • {contactModalListing.quantity} Units
+              </div>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <a
                 href={`tel:${contactModalListing.farmer_phone}`}
                 className="btn btn-primary"
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, textDecoration: 'none' }}
+                style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, textDecoration: 'none',
+                  background: contactModalListing.type === 'buy' ? '#0091EA' : undefined
+                }}
               >
                 <Phone size={18} /> Call +{contactModalListing.farmer_phone}
               </a>
