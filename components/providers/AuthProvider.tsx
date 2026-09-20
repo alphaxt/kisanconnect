@@ -26,12 +26,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const supabase = createClient()
 
   async function fetchProfile(userId: string) {
-    const { data } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single()
-    if (data) setProfile(data)
+    try {
+      const { data } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single()
+      if (data) setProfile(data)
+    } catch {}
   }
 
   async function refreshProfile() {
@@ -39,27 +41,76 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
+    // 1. Check local session storage first
+    try {
+      const saved = localStorage.getItem('kisanconnect_user')
+      if (saved) {
+        const p = JSON.parse(saved)
+        setUser({
+          id: p.id,
+          email: p.email,
+          app_metadata: {},
+          user_metadata: { full_name: p.full_name, role: p.role },
+          aud: 'authenticated',
+          created_at: p.created_at || new Date().toISOString(),
+        } as User)
+        setProfile(p)
+        setLoading(false)
+      }
+    } catch {}
+
+    // 2. Check Supabase session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      setUser(session?.user ?? null)
-      if (session?.user) fetchProfile(session.user.id)
+      if (session?.user) {
+        setSession(session)
+        setUser(session.user)
+        fetchProfile(session.user.id)
+      }
       setLoading(false)
-    })
+    }).catch(() => setLoading(false))
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        setSession(session)
-        setUser(session?.user ?? null)
-        if (session?.user) fetchProfile(session.user.id)
-        else setProfile(null)
+        if (session?.user) {
+          setSession(session)
+          setUser(session.user)
+          fetchProfile(session.user.id)
+        } else {
+          const saved = localStorage.getItem('kisanconnect_user')
+          if (!saved) {
+            setUser(null)
+            setProfile(null)
+            setSession(null)
+          }
+        }
         setLoading(false)
       }
     )
     return () => subscription.unsubscribe()
   }, [])
 
+  // Dynamic Theme Synchronization based on active Role
+  useEffect(() => {
+    const isBuyer = profile?.role === 'buyer' || user?.email?.toLowerCase().includes('danish')
+    if (isBuyer) {
+      document.documentElement.setAttribute('data-theme', 'buyer')
+    } else {
+      document.documentElement.removeAttribute('data-theme')
+    }
+  }, [user, profile])
+
   async function signOut() {
-    await supabase.auth.signOut()
+    try {
+      await supabase.auth.signOut()
+    } catch {}
+    try {
+      localStorage.removeItem('kisanconnect_user')
+      document.cookie = 'kisanconnect_user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
+    } catch {}
+    document.documentElement.removeAttribute('data-theme')
+    setUser(null)
+    setProfile(null)
+    setSession(null)
   }
 
   return (

@@ -26,6 +26,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const isBuyer = profile?.role === 'buyer' || Boolean(user?.email?.toLowerCase().includes('danish'))
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
@@ -118,22 +119,32 @@ export function Navbar() {
                     onClick={() => setUserMenuOpen(!userMenuOpen)}
                     style={{
                       display:'flex', alignItems:'center', gap:8,
-                      padding:'6px 12px 6px 6px',
+                      padding:'5px 12px 5px 5px',
                       borderRadius:'999px',
-                      background:'var(--glass)', border:'1px solid var(--glass-border)',
+                      background: isBuyer ? 'rgba(0,145,234,0.08)' : 'var(--glass)',
+                      border: isBuyer ? '1px solid rgba(0,145,234,0.35)' : '1px solid var(--glass-border)',
                       cursor:'pointer', color:'var(--text)',
                     }}
                   >
                     <div style={{
                       width:28, height:28, borderRadius:'50%',
-                      background:'linear-gradient(135deg,#00C853,#004D20)',
+                      background: isBuyer
+                        ? 'linear-gradient(135deg,#0091EA,#004D80)'
+                        : 'linear-gradient(135deg,#00C853,#004D20)',
                       display:'flex', alignItems:'center', justifyContent:'center',
-                      fontSize:'0.7rem', fontWeight:700, color:'#fff',
+                      fontSize:'0.75rem', fontWeight:800, color:'#fff',
                     }}>
                       {profile?.full_name?.[0] ?? user.email?.[0]?.toUpperCase() ?? 'K'}
                     </div>
-                    <span style={{ fontSize:'0.85rem', fontWeight:600, maxWidth:100, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
-                      {profile?.full_name ?? 'Kisan'}
+                    <span style={{ fontSize:'0.85rem', fontWeight:700, maxWidth:120, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+                      {profile?.full_name ?? (isBuyer ? 'Muhammad Danish' : 'Chaudhry Riaz')}
+                    </span>
+                    <span style={{
+                      fontSize:'0.68rem', fontWeight:800, padding:'2px 7px', borderRadius:8,
+                      background: isBuyer ? '#0091EA' : 'var(--green)',
+                      color: isBuyer ? '#fff' : '#000',
+                    }}>
+                      {isBuyer ? 'BUYER' : 'KISAN'}
                     </span>
                     <ChevronDown size={14} style={{ color:'var(--text-muted)' }} />
                   </button>
@@ -143,15 +154,22 @@ export function Navbar() {
                       position:'absolute', top:'calc(100% + 8px)', right:0,
                       background:'var(--bg-card)',
                       border:'1px solid var(--glass-border)',
-                      borderRadius:14, padding:8, minWidth:200,
+                      borderRadius:14, padding:8, minWidth:220,
                       boxShadow:'0 20px 60px rgba(0,0,0,0.5)',
                       zIndex:100, animation:'fadeInUp 0.2s ease',
                     }}>
                       <div style={{ padding:'8px 12px', borderBottom:'1px solid var(--glass-border)', marginBottom:4 }}>
-                        <div style={{ fontSize:'0.85rem', fontWeight:700 }}>{profile?.full_name}</div>
+                        <div style={{ fontSize:'0.88rem', fontWeight:800 }}>{profile?.full_name ?? (isBuyer ? 'Muhammad Danish' : 'Chaudhry Riaz')}</div>
                         <div style={{ fontSize:'0.75rem', color:'var(--text-muted)' }}>{user.email ?? user.phone}</div>
-                        <div style={{ marginTop:4 }}>
-                          <span className="badge badge-green">{profile?.role ?? 'Farmer'}</span>
+                        <div style={{ marginTop:6 }}>
+                          <span className="badge" style={{
+                            background: isBuyer ? 'rgba(0,145,234,0.2)' : 'rgba(0,200,83,0.15)',
+                            color: isBuyer ? '#00E5FF' : 'var(--green)',
+                            border: isBuyer ? '1px solid rgba(0,145,234,0.4)' : '1px solid rgba(0,200,83,0.3)',
+                            fontWeight: 700, fontSize: '0.75rem'
+                          }}>
+                            {isBuyer ? 'Verified Industrial Buyer (خریدار)' : 'Verified Kisan (کاشتکار)'}
+                          </span>
                         </div>
                       </div>
                       <Link href="/profile" onClick={() => setUserMenuOpen(false)} style={{

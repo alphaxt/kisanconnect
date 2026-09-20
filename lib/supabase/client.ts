@@ -1,7 +1,14 @@
 import { createBrowserClient } from '@supabase/ssr'
 
-const SUPABASE_URL = (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_URL.startsWith('http'))
-  ? process.env.NEXT_PUBLIC_SUPABASE_URL
+export const isSupabaseConfigured = Boolean(
+  process.env.NEXT_PUBLIC_SUPABASE_URL &&
+  process.env.NEXT_PUBLIC_SUPABASE_URL.startsWith('http') &&
+  !process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder') &&
+  !process.env.NEXT_PUBLIC_SUPABASE_URL.includes('YOUR_')
+)
+
+const SUPABASE_URL = isSupabaseConfigured
+  ? process.env.NEXT_PUBLIC_SUPABASE_URL!
   : 'https://placeholder.supabase.co'
 
 const SUPABASE_ANON_KEY = (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY && !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.includes('YOUR_'))

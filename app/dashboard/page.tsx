@@ -2,9 +2,12 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Navbar } from '@/components/Navbar'
 import { LandingFooter } from '@/components/landing/LandingTestimonials'
+import Link from 'next/link'
+import { useAuth } from '@/components/providers/AuthProvider'
 import {
   TrendingUp, TrendingDown, Minus, Search, Filter,
-  RefreshCw, MapPin, Plus, CheckCircle, AlertCircle, ArrowUpRight, BarChart2
+  RefreshCw, MapPin, Plus, CheckCircle, AlertCircle, ArrowUpRight, BarChart2,
+  Store, ShoppingBag, ShieldCheck, ArrowRight
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -40,6 +43,7 @@ const INITIAL_PRICES: MandiItem[] = [
 ]
 
 export default function DashboardPage() {
+  const { user, profile } = useAuth()
   const [prices, setPrices] = useState<MandiItem[]>(INITIAL_PRICES)
   const [search, setSearch] = useState('')
   const [selectedProvince, setSelectedProvince] = useState('All')
@@ -48,6 +52,10 @@ export default function DashboardPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedChartCrop, setSelectedChartCrop] = useState('Wheat')
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const isBuyer = profile?.role === 'buyer' || user?.email?.toLowerCase().includes('danish')
+  const isFarmer = profile?.role === 'farmer' || user?.email?.toLowerCase().includes('pcwork')
+  const isLoggedIn = Boolean(user || profile)
 
   // New rate form state
   const [formData, setFormData] = useState({
@@ -202,6 +210,87 @@ export default function DashboardPage() {
             </button>
           </div>
         </div>
+
+        {/* Role-Adaptive Workspace Banner */}
+        {isLoggedIn && isBuyer && (
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(0,145,234,0.12) 0%, rgba(13,21,13,0.95) 100%)',
+            border: '1px solid rgba(0,145,234,0.35)',
+            borderRadius: 16, padding: '20px 24px', marginBottom: 28,
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16,
+            boxShadow: '0 8px 32px rgba(0,145,234,0.15)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{
+                width: 48, height: 48, borderRadius: 12,
+                background: 'linear-gradient(135deg, #0091EA, #004D80)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: '1.4rem'
+              }}>🛒</div>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                  <span style={{ fontWeight: 800, fontSize: '1.1rem', color: '#00E5FF' }}>
+                    Industrial Buyer Workspace: {profile?.full_name || 'Muhammad Danish'}
+                  </span>
+                  <span className="badge" style={{ background: '#0091EA', color: '#fff', fontSize: '0.75rem', fontWeight: 700 }}>
+                    Verified Mill Buyer
+                  </span>
+                </div>
+                <p style={{ color: 'var(--text-2)', fontSize: '0.85rem', margin: 0 }}>
+                  <strong>Procurement Mode Active:</strong> Monitoring lowest farm-gate basmati, wheat & cotton offers. Direct farmer contracts eliminate 12% middleman arhti margins.
+                </p>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <Link href="/marketplace" className="btn btn-primary btn-sm" style={{ background: 'linear-gradient(135deg, #0091EA, #00609C)', color: '#fff' }}>
+                <ShoppingBag size={15} /> Browse Farmer Batches
+              </Link>
+              <Link href="/profile" className="btn btn-secondary btn-sm">
+                Buyer Profile
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {isLoggedIn && isFarmer && (
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(0,200,83,0.12) 0%, rgba(13,21,13,0.95) 100%)',
+            border: '1px solid rgba(0,200,83,0.35)',
+            borderRadius: 16, padding: '20px 24px', marginBottom: 28,
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16,
+            boxShadow: '0 8px 32px rgba(0,200,83,0.15)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{
+                width: 48, height: 48, borderRadius: 12,
+                background: 'linear-gradient(135deg, #00C853, #004D20)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: '1.4rem'
+              }}>🌾</div>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                  <span style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--green)' }}>
+                    Kisan Command Center: {profile?.full_name || 'Chaudhry Riaz (Kisan)'}
+                  </span>
+                  <span className="badge badge-green" style={{ fontSize: '0.75rem', fontWeight: 700 }}>
+                    Verified Grower • {profile?.district || 'Sahiwal'} ({profile?.land_acres || 25} Acres)
+                  </span>
+                </div>
+                <p style={{ color: 'var(--text-2)', fontSize: '0.85rem', margin: 0 }}>
+                  <strong>Grower Mode Active:</strong> Peak selling mandis highlighted. PM Kissan Card subsidy eligible. Sell directly to verified mills to maximize your crop revenue.
+                </p>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <Link href="/marketplace" className="btn btn-primary btn-sm">
+                <Store size={15} /> Sell Crop Batch
+              </Link>
+              <Link href="/profile" className="btn btn-secondary btn-sm">
+                Farm Profile
+              </Link>
+            </div>
+          </div>
+        )}
 
         {/* Top 4 Quick Commodity Cards */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16, marginBottom: 32 }}>

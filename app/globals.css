@@ -41,6 +41,15 @@
   --nav-h: 72px;
 }
 
+/* ─── INDUSTRIAL BUYER THEME ─── */
+[data-theme="buyer"] {
+  --green: #00E5FF;
+  --green-dark: #0091EA;
+  --green-deep: #003B64;
+  --glass-border: rgba(0, 229, 255, 0.2);
+  --shadow-glow: 0 0 40px rgba(0, 229, 255, 0.18);
+}
+
 html { scroll-behavior: smooth; }
 
 body {
